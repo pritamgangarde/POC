@@ -14,6 +14,7 @@ import org.xmlunit.diff.Difference;
 @SpringBootTest
 class AdvancedPocApplicationTests {
 
+
 	@Test
 	void contextLoads() throws IOException {
 		String actual = Files.readString(Path.of("D:\\workspace\\Files\\Student1.xml"));
@@ -25,12 +26,13 @@ class AdvancedPocApplicationTests {
 		Iterator<Difference> iter = myDiff.getDifferences().iterator();
 		int size = 0;
 		while (iter.hasNext()) {
-			Difference difference=iter.next();
+			Difference difference = iter.next();
 			System.err.println(difference.getResult());
 			System.err.println(difference.getResult());
 			size++;
 		}
-		System.err.println("-->"+size);
+		System.err.println("-->" + size);
 	}
+
 
 }
