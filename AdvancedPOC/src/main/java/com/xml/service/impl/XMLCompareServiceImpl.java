@@ -32,7 +32,8 @@ import com.xml.model.ConfigXML;
 import com.xml.model.NodeAttributeDetails;
 import com.xml.model.XMLDifferences;
 import com.xml.service.XMLCompareService;
-import com.xml.util.XMLNodeType;
+import com.xml.util.XmlUtils;
+import com.xml.util.XmlUtils.XMLNodeType;
 
 @Service
 public class XMLCompareServiceImpl implements XMLCompareService {
@@ -89,7 +90,7 @@ public class XMLCompareServiceImpl implements XMLCompareService {
 		List<NodeAttributeDetails> listNodeAttributeDetails = new ArrayList<>();
 		listConfigXML.forEach(configXML -> {
 			NodeAttributeDetails nodeAttributeDetails = new NodeAttributeDetails();
-			String[] xmlPath = configXML.getPath().split("->");
+			String[] xmlPath = configXML.getPath().split(XmlUtils.NODE_SEPARATOR);
 			getNodeTypeAndXpath(configXML.getType(), nodeAttributeDetails, xmlPath);
 			listNodeAttributeDetails.add(nodeAttributeDetails);
 		});
@@ -115,7 +116,8 @@ public class XMLCompareServiceImpl implements XMLCompareService {
 				break;
 
 			case ATTRIBUTE:
-				String path = nodeAttributeDetails.getXpath().replace("/@" + nodeAttributeDetails.getAttr(), "");
+				String path = nodeAttributeDetails.getXpath()
+						.replace(XmlUtils.FORWARD_SLASH_AT_THE_RATE + nodeAttributeDetails.getAttr(), "");
 				Node actualNode = (Node) xpath.compile(path).evaluate(documentXML, XPathConstants.NODE);
 				Element eElement = (Element) actualNode;
 				eElement.removeAttribute(nodeAttributeDetails.getAttr());
@@ -144,9 +146,11 @@ public class XMLCompareServiceImpl implements XMLCompareService {
 		for (int i = 0; i < xmlPath.length; i++) {
 			if (xmlPath[i] != null) {
 				if (xmlPath.length - 1 == i) {
-					nodeAttributeDetails.setXpath(nodeAttributeDetails.getXpath() + "/@" + xmlPath[i].trim());
+					nodeAttributeDetails.setXpath(
+							nodeAttributeDetails.getXpath() + XmlUtils.FORWARD_SLASH_AT_THE_RATE + xmlPath[i].trim());
 				} else
-					nodeAttributeDetails.setXpath(nodeAttributeDetails.getXpath() + "/" + xmlPath[i].trim());
+					nodeAttributeDetails
+							.setXpath(nodeAttributeDetails.getXpath() + XmlUtils.FORWARD_SLASH + xmlPath[i].trim());
 			}
 		}
 		if (xmlPath.length > 0) {
@@ -156,14 +160,15 @@ public class XMLCompareServiceImpl implements XMLCompareService {
 
 	private void getNodeTypeAndXpath(String type, NodeAttributeDetails nodeAttributeDetails, String[] xmlPath) {
 		switch (type) {
-		case "N":
+		case XmlUtils.NODE:
 			nodeAttributeDetails.setType(XMLNodeType.NODE);
 			for (String path : xmlPath) {
 				if (path != null)
-					nodeAttributeDetails.setXpath(nodeAttributeDetails.getXpath() + "/" + path.trim());
+					nodeAttributeDetails
+							.setXpath(nodeAttributeDetails.getXpath() + XmlUtils.FORWARD_SLASH + path.trim());
 			}
 			break;
-		case "A":
+		case XmlUtils.ATTRIBUTE:
 			nodeAttributeDetails.setType(XMLNodeType.ATTRIBUTE);
 			prepareXpathForNodeAttribute(nodeAttributeDetails, xmlPath);
 			break;

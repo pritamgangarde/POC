@@ -1,6 +1,6 @@
 package com.xml.model;
 
-import com.xml.util.XMLNodeType;
+import com.xml.util.XmlUtils.XMLNodeType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
