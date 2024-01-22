@@ -1,0 +1,20 @@
+server:
+ port: 9192
+spring:
+ jpa: 
+  hibernate:
+   ddl-auto: update
+ datasource:
+  url: jdbc:mysql://localhost:3306/order_db?allowPublicKeyRetrieval=true&serverTimezone=UTC&useSSL=false&autoReconnect=true
+  username: root
+  password: root@123
+ application:
+  name: ORDER-SERVICE
+eureka:
+ client:
+  register-with-eureka: true
+  fetch-registry: true
+  service-url:
+   defaultZone: http://localhost:8761/eureka/
+ instance:
+  hostname: localhost
